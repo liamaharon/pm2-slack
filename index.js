@@ -116,6 +116,9 @@ pm2.launchBus(function(err, bus) {
     if (moduleConfig.log) {
         bus.on('log:out', function(data) {
             if (data.process.name === 'pm2-slack') { return; } // Ignore messages of own module.
+            
+            console.log('log:out')
+            console.log(data);
 
             const parsedLog = parseIncommingLog(data.data);
             slackUrlRouter.addMessage({
@@ -131,6 +134,9 @@ pm2.launchBus(function(err, bus) {
     if (moduleConfig.error) {
         bus.on('log:err', function(data) {
             if (data.process.name === 'pm2-slack') { return; } // Ignore messages of own module.
+
+            console.log('log:err')
+            console.log(data);
 
             const parsedLog = parseIncommingLog(data.data);
             slackUrlRouter.addMessage({
