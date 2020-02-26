@@ -130,10 +130,28 @@ pm2.launchBus(function(err, bus) {
         });
     }
 
+    const expectedErrors = [
+        '- Checking there are no inflight txns sent by the sender wallet\n',
+        '✔ No inflight txns from sender wallet\n',
+        '- Crafting and sending transaction\n',
+        '✔ Transaction sent (',
+        '- Waiting for pending notification\n',
+        '✔ Received expected pending notification\n',
+        '- Waiting for confirmed notification\n',
+        '✔ Received expected confirmed notification\n',
+    ]
+
     // Listen for process errors
     if (moduleConfig.error) {
         bus.on('log:err', function(data) {
             if (data.process.name === 'pm2-slack') { return; } // Ignore messages of own module.
+
+            for (let i =0; i<expectedErrors.length; i+=1) {
+                const errString = expectedErrors[i]
+                if (data.data.includes(errString)) {
+                    return
+                }
+            }
 
             console.log('log:err')
             console.log(data);
